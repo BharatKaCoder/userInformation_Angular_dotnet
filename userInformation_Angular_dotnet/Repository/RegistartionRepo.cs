@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using userInformation_Angular_dotnet.Models;
 using userInformation_Angular_dotnet.Repository.IRepository;
 
@@ -23,10 +24,18 @@ namespace userInformation_Angular_dotnet.Repository
             throw new NotImplementedException();
         }
 
-        public Task<List<Registration>> GetAllUserList(Expression<Func<Registration, bool>> filter = null)
+        public async Task<List<Registration>> GetAllUserListAsync(Expression<Func<Registration, bool>>? filter = null)
         {
-            throw new NotImplementedException();
+            IQueryable<Registration> query = _DbContext.UserListTable;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.ToListAsync();
         }
+
 
         public Task<Registration> GetUserById(Guid id)
         {
