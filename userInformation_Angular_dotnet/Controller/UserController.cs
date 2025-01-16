@@ -24,6 +24,22 @@ namespace userInformation_Angular_dotnet.Controller
             _mapper = mapper;
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<ActionResult> GetAllUser()
+        {
+            try
+            {
+                IEnumerable<Registration> UserList = await _registration.GetAllUserListAsync();
+                return Ok(UserList);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -32,12 +48,12 @@ namespace userInformation_Angular_dotnet.Controller
         {
             try
             {
-                //var UserList = await _registration.GetAllUserList(u => u.UserName.ToLower() == regDTO.UserName.ToLower()) != null; ;
-                //if (UserList)
-                //{
-                //    ModelState.AddModelError("ErrorMsg", "The user is already registered!");
-                //    return BadRequest(ModelState);
-                //}
+                var userList = await _registration.GetAllUserListAsync(u => u.UserName.ToLower() == regDTO.UserName.ToLower());
+                if (userList != null && userList.Count > 0)
+                {
+                    ModelState.AddModelError("ErrorMsg", "The user is already registered!");
+                    return BadRequest(ModelState);
+                }
 
                 if (regDTO == null)
                 {
@@ -45,7 +61,7 @@ namespace userInformation_Angular_dotnet.Controller
                 }
                 Registration registration = _mapper.Map<Registration>(regDTO);
                 await _registration.CreateNewUser(registration);
-                return Ok("User created successfully!");
+                return CreatedAtAction(nameof(CreateNewUser), new { id = registration.Id }, "User created successfully!");
             }
             catch (Exception ex) { 
                 return BadRequest(ex.Message);
