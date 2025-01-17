@@ -16,35 +16,42 @@ namespace userInformation_Angular_dotnet.Controller
         private readonly ApplicationDbContext _dbcontext;
         private readonly IRegistration _registration;
         private readonly IMapper _mapper; // This is Automapper and installed this from Nupackage
+        private readonly APIResponse _APIResponse;
 
         public UserController(ApplicationDbContext dbContext, IRegistration registration, IMapper mapper)
         {
             _dbcontext = dbContext;
             _registration = registration;
             _mapper = mapper;
+            _APIResponse = new();
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult> GetAllUser()
+        public async Task<ActionResult<APIResponse>> GetAllUser()
         {
             try
             {
                 IEnumerable<Registration> UserList = await _registration.GetAllUserListAsync();
-                return Ok(UserList);
+                _APIResponse.Result = _mapper.Map<List<RegistrationRequestDTO>>(UserList);
+                _APIResponse.success = true;
+                _APIResponse.StatusCode = HttpStatusCode.OK;
+                return Ok(_APIResponse);
             }
             catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                _APIResponse.success = false;
+                _APIResponse.ErrorMessages = new List<string>() { ex.Message };
             }
+            return _APIResponse;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> CreateNewUser([FromBody] RegistrationRequestDTO regDTO)
+        public async Task<ActionResult<APIResponse>> CreateNewUser([FromBody] RegistrationRequestDTO regDTO)
         {
             try
             {
@@ -61,11 +68,16 @@ namespace userInformation_Angular_dotnet.Controller
                 }
                 Registration registration = _mapper.Map<Registration>(regDTO);
                 await _registration.CreateNewUser(registration);
-                return CreatedAtAction(nameof(CreateNewUser), new { id = registration.Id }, "User created successfully!");
+                _APIResponse.Result = _mapper.Map<RegistrationRequestDTO>(regDTO);
+                _APIResponse.success = true;
+                _APIResponse.StatusCode = HttpStatusCode.OK;
+                return CreatedAtAction(nameof(CreateNewUser), new { id = registration.Id }, _APIResponse);
             }
-            catch (Exception ex) { 
-                return BadRequest(ex.Message);
+            catch (Exception ex) {
+                _APIResponse.success = false;
+                _APIResponse.ErrorMessages = new List<string> { ex.Message };
             }
+            return _APIResponse;
         }
 
     }
