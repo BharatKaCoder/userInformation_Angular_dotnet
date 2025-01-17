@@ -26,6 +26,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddHttpClient<IRegistration, RegistartionRepo>();
 builder.Services.AddScoped<IRegistration, RegistartionRepo>();
 
+builder.Services.AddHttpClient<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 // Injecting AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
