@@ -24,6 +24,7 @@ namespace userInformation_Angular_dotnet.Controller
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
+
             if (loginRequestDTO == null || string.IsNullOrEmpty(loginRequestDTO.UserName) || string.IsNullOrEmpty(loginRequestDTO.Password))
             {
                 _APIResponse.StatusCode = HttpStatusCode.BadRequest;
@@ -42,7 +43,8 @@ namespace userInformation_Angular_dotnet.Controller
             }
 
             var loginRes = await _userRepository.Login(loginRequestDTO);
-            if (loginRes == null || loginRes.User == null || string.IsNullOrEmpty(loginRes.Token))
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, loginRes.User.Password);
+            if (loginRes == null || loginRes.User == null || string.IsNullOrEmpty(loginRes.Token) || !isPasswordValid)
             {
                 _APIResponse.StatusCode = HttpStatusCode.BadRequest;
                 _APIResponse.success = false;
@@ -52,7 +54,7 @@ namespace userInformation_Angular_dotnet.Controller
 
             _APIResponse.StatusCode = HttpStatusCode.OK;
             _APIResponse.success = true;
-            _APIResponse.Result = loginRes; // Return the login response
+            _APIResponse.Result = new { loginRes.User.UserName , loginRes.Token }; // Return the login response
             return Ok(_APIResponse);
         }
     }

@@ -9,6 +9,7 @@ namespace userInformation_Angular_dotnet
         public MappingConfig() 
         {
             CreateMap<Registration, RegistrationRequestDTO>().ReverseMap();
+            CreateMap<Registration, RegistrationUpdateDTO>().ReverseMap();
         }
     }
 }
