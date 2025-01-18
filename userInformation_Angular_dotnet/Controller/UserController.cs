@@ -89,6 +89,8 @@ namespace userInformation_Angular_dotnet.Controller
 
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> DeleteUserAsync(int id)
         {
             try
@@ -131,6 +133,8 @@ namespace userInformation_Angular_dotnet.Controller
         }
 
         [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> UpdateUserAsync(int id, [FromBody] RegistrationUpdateDTO updatedUser)
         {
             try
@@ -183,6 +187,54 @@ namespace userInformation_Angular_dotnet.Controller
             }
         }
 
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(APIResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<APIResponse>> GetUserById(int id)
+        {
+            try
+            {
+                // Check for invalid ID
+                if (id <= 0)
+                {
+                    _APIResponse.StatusCode = HttpStatusCode.BadRequest;
+                    _APIResponse.success = false;
+                    _APIResponse.ErrorMessages.Add("Invalid user ID.");
+                    return BadRequest(_APIResponse);
+                }
+
+                // Retrieve the user by ID
+                var editedUser = await _registration.GetUserById(id);
+
+                // Check if the user was found
+                if (editedUser == null)
+                {
+                    _APIResponse.StatusCode = HttpStatusCode.NotFound;
+                    _APIResponse.success = false;
+                    _APIResponse.ErrorMessages.Add("User not found.");
+                    return NotFound(_APIResponse);
+                }
+
+                // Map the user to DTO and prepare the response
+                var userDto = _mapper.Map<RegistrationRequestDTO>(editedUser);
+                _APIResponse.Result = userDto;
+                _APIResponse.success = true;
+                _APIResponse.StatusCode = HttpStatusCode.OK;
+
+                return Ok(_APIResponse);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                _APIResponse.StatusCode = HttpStatusCode.InternalServerError;
+                _APIResponse.success = false;
+                _APIResponse.ErrorMessages.Add(ex.Message);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, _APIResponse);
+            }
+        }
 
     }
 }
