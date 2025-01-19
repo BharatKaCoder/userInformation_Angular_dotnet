@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "userInformation_Angular_dotnet", "userInformation_Angular_dotnet\userInformation_Angular_dotnet.csproj", "{02841DAE-A39A-471C-97DE-69C5A55BF6EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICC_Champion_Trophy_2025", "ICC_Champion_Trophy_2025\ICC_Champion_Trophy_2025.csproj", "{A6B21E1A-1D20-4346-AD6A-7444EACB795F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{02841DAE-A39A-471C-97DE-69C5A55BF6EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02841DAE-A39A-471C-97DE-69C5A55BF6EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02841DAE-A39A-471C-97DE-69C5A55BF6EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6B21E1A-1D20-4346-AD6A-7444EACB795F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6B21E1A-1D20-4346-AD6A-7444EACB795F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6B21E1A-1D20-4346-AD6A-7444EACB795F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6B21E1A-1D20-4346-AD6A-7444EACB795F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
