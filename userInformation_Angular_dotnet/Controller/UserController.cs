@@ -37,7 +37,7 @@ namespace userInformation_Angular_dotnet.Controller
                 _APIResponse.Result = _mapper.Map<List<RegistrationRequestDTO>>(UserList);
                 _APIResponse.success = true;
                 _APIResponse.StatusCode = HttpStatusCode.OK;
-                return Ok(_mapper.Map<RegistrationRequestDTO>(UserList));
+                return Ok(_APIResponse);
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace userInformation_Angular_dotnet.Controller
             return _APIResponse;
         }
 
-        [HttpPost]
+        [HttpPost(Name ="createNewUser")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -87,7 +87,7 @@ namespace userInformation_Angular_dotnet.Controller
             return _APIResponse;
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}", Name ="delete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -132,9 +132,11 @@ namespace userInformation_Angular_dotnet.Controller
             }
         }
 
-        [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPut("{id:int}", Name = "update")]
+        [ProducesResponseType(typeof(APIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(APIResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(APIResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> UpdateUserAsync(int id, [FromBody] RegistrationUpdateDTO updatedUser)
         {
             try
@@ -156,6 +158,14 @@ namespace userInformation_Angular_dotnet.Controller
                     _APIResponse.success = false;
                     _APIResponse.ErrorMessages.Add("User not found.");
                     return NotFound(_APIResponse);
+                }
+
+                // Check if the password needs to be updated
+                if (!string.IsNullOrEmpty(updatedUser.Password))
+                {
+                    // Hash the new password
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(updatedUser.Password);
+                    updatedUser.Password = hashedPassword; // Set the hashed password back to updatedUser
                 }
 
                 // Map updated data to existing user
@@ -183,11 +193,13 @@ namespace userInformation_Angular_dotnet.Controller
                 _APIResponse.StatusCode = HttpStatusCode.InternalServerError;
                 _APIResponse.success = false;
                 _APIResponse.ErrorMessages.Add(ex.Message);
+
                 return StatusCode((int)HttpStatusCode.InternalServerError, _APIResponse);
             }
         }
 
-        [HttpGet("{id:int}")]
+
+        [HttpGet("{id:int}", Name = "getUserById")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(APIResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

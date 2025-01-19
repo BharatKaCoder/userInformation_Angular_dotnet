@@ -60,11 +60,10 @@ namespace userInformation_Angular_dotnet.Repository
 
         public async Task<bool> UpdateUserAsync(Registration entity)
         {
-            // Find user by ID
             var user = await _DbContext.UserListTable.FindAsync(entity.Id);
             if (user == null)
             {
-                return false; // User not found
+                return false;
             }
             // Save changes to database
             try
@@ -73,12 +72,10 @@ namespace userInformation_Angular_dotnet.Repository
             }
             catch (DbUpdateException ex)
             {
-                // Log exception details for troubleshooting
                 Console.WriteLine($"Database update error: {ex.Message}");
-                return false; // Indicate failure in saving changes
+                return false;
             }
-
-            return true; // Indicate success
+            return true;
         }
 
 
