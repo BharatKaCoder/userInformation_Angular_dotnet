@@ -55,7 +55,7 @@ namespace userInformation_Angular_dotnet.Controller
 
                 _APIResponse.StatusCode = HttpStatusCode.OK;
                 _APIResponse.success = true;
-                _APIResponse.Result = new { loginRes.User.UserName , loginRes.Token }; // Return the login response
+                _APIResponse.Result = new { loginRes.User.UserName, loginRes.Token, loginRes.User.Role }; // Return the login response
                 return Ok(_APIResponse);
             }
             catch (Exception ex)
