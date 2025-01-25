@@ -48,6 +48,30 @@ namespace ICC_Champion_Trophy_2025.Repository
             return true;
         }
 
+        public async Task<bool> UpdatePlayer(Players entity)
+        {
+            var player = await _DBcontext.Players_new.FindAsync(entity.Id);
+            if (player == null)
+            {
+                return false;
+            }
+            try
+            {
+                await _DBcontext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine("Database update error", ex.Message);
+                return false;
+            }
+            return true;
+        }
+        public async Task<Players> GetPlayerById(int id)
+        {
+            var player = await _DBcontext.Players_new.FindAsync(id);
+            return player;
+        }
+
         public async Task SaveAsync(Players entity)
         {
             await _DBcontext.SaveChangesAsync();

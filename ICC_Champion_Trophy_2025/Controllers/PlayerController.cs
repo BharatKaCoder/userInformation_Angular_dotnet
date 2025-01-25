@@ -114,5 +114,45 @@ namespace ICC_Champion_Trophy_2025.Controllers
             }
         }
 
+        [HttpPut("{id:int}",Name ="updateplayerdetails")]
+        public async Task<ActionResult<APIResponse>> UpdateUserAsync (int id,[FromBody] PlayerDTO entity)
+        {
+            try
+            {
+                if(entity == null || entity.Id != id)
+                {
+                    _APIResponse.success = false;
+                    _APIResponse.StatusCode = HttpStatusCode.BadRequest;
+                    _APIResponse.Error.Add("No player found!"); 
+                }
+
+                var existingUser = await _PlayerRepository.GetPlayerById(id);
+                if (existingUser == null) {
+                    _APIResponse.success = false;
+                    _APIResponse.StatusCode = HttpStatusCode.BadRequest;
+                    _APIResponse.Error.Add("Player not found");
+                    return NotFound(_APIResponse);
+                }
+                _Mapper.Map(entity, existingUser);
+                bool isUpdated = await _PlayerRepository.UpdatePlayer(existingUser);
+                if (isUpdated)
+                {
+                    _APIResponse.StatusCode = HttpStatusCode.OK;
+                    _APIResponse.success = true;
+                    _APIResponse.result = "User updated successfully.";
+                    return Ok(_APIResponse);
+                }
+                return (_APIResponse);
+            }
+            catch (Exception ex)
+            {
+                // Exception handling
+                _APIResponse.StatusCode = HttpStatusCode.InternalServerError;
+                _APIResponse.success = false;
+                _APIResponse.Error.Add(ex.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, _APIResponse);
+            }
+        }
+
     }
 }

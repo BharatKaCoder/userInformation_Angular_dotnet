@@ -77,7 +77,5 @@ namespace userInformation_Angular_dotnet.Repository
             }
             return true;
         }
-
-
     }
 }
