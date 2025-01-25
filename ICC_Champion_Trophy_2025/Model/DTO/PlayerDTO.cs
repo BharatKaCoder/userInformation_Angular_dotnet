@@ -1,23 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ICC_Champion_Trophy_2025.Model
+namespace ICC_Champion_Trophy_2025.Model.DTO
 {
-    public class Players
+    public class PlayerDTO
     {
-        [Required]
         public int Id { get; set; }
-        [Required]
         public string PlayerName { get; set; }
         public string Role { get; set; }
         public int Matches { get; set; }
         public int HighestScore { get; set; }
-        [Required]
         public int Wickets { get; set; }
         public int TeamId { get; set; }
-
-        [ForeignKey(nameof(TeamId))]
-        public virtual Teams Teams { get; set; }
-        public virtual ICollection<PlayerDetails> PlayerDetails { get; set; }
     }
 }

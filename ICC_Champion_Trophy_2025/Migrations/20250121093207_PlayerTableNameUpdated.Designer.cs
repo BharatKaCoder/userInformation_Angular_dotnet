@@ -3,6 +3,7 @@ using ICC_Champion_Trophy_2025;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICC_Champion_Trophy_2025.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250121093207_PlayerTableNameUpdated")]
+    partial class PlayerTableNameUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,8 @@ namespace ICC_Champion_Trophy_2025.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("PlayerId")
+                        .IsUnique();
 
                     b.ToTable("PlayerDetails");
                 });
@@ -72,7 +76,7 @@ namespace ICC_Champion_Trophy_2025.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("HighestScore")
+                    b.Property<int>("HighScore")
                         .HasColumnType("int");
 
                     b.Property<int>("Matches")
@@ -87,9 +91,6 @@ namespace ICC_Champion_Trophy_2025.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TeamId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Wickets")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -130,8 +131,8 @@ namespace ICC_Champion_Trophy_2025.Migrations
             modelBuilder.Entity("ICC_Champion_Trophy_2025.Model.PlayerDetails", b =>
                 {
                     b.HasOne("ICC_Champion_Trophy_2025.Model.Players", "Player")
-                        .WithMany("PlayerDetails")
-                        .HasForeignKey("PlayerId")
+                        .WithOne("PlayerDetails")
+                        .HasForeignKey("ICC_Champion_Trophy_2025.Model.PlayerDetails", "PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -151,7 +152,8 @@ namespace ICC_Champion_Trophy_2025.Migrations
 
             modelBuilder.Entity("ICC_Champion_Trophy_2025.Model.Players", b =>
                 {
-                    b.Navigation("PlayerDetails");
+                    b.Navigation("PlayerDetails")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ICC_Champion_Trophy_2025.Model.Teams", b =>

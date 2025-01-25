@@ -26,6 +26,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => {
 builder.Services.AddHttpClient<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
+builder.Services.AddHttpClient<IPlayer, PlayerRepository>();
+builder.Services.AddScoped<IPlayer, PlayerRepository>();
+
 // 3) AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 

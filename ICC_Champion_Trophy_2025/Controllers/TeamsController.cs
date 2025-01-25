@@ -24,7 +24,7 @@ namespace ICC_Champion_Trophy_2025.Controllers
             _teamRepository = teamRepository;
         }
 
-        [HttpGet("GetAllTeams")]
+        [HttpGet("getteamlist")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetAllTeams()
         {

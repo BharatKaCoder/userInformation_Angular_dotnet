@@ -9,6 +9,7 @@ namespace ICC_Champion_Trophy_2025
         public MappingConfig()
         {
             CreateMap<Teams, TeamsDTO>().ReverseMap();
+            CreateMap<Players, PlayerDTO>().ReverseMap();
         }
     }
 }
